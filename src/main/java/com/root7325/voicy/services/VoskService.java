@@ -1,8 +1,12 @@
 package com.root7325.voicy.services;
 
+import com.google.gson.JsonObject;
 import com.root7325.voicy.utils.Config;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.json.JSONObject;
+import org.vosk.LibVosk;
+import org.vosk.LogLevel;
 import org.vosk.Model;
 import org.vosk.Recognizer;
 
@@ -37,10 +41,13 @@ public class VoskService {
             byte[] buffer = new byte[4096];
             while ((nbytes = ais.read(buffer)) >= 0) {
                 if (recognizer.acceptWaveForm(buffer, nbytes)) {
-                    return recognizer.getResult();
+                    String result = recognizer.getResult();
+                    return (String) new JSONObject(result).get("text");
                 }
             }
-            return recognizer.getFinalResult();
+
+            String result = recognizer.getFinalResult();
+            return (String) new JSONObject(result).get("text");
 
         } catch (Exception e) {
             log.error("Error recognizing speech", e);

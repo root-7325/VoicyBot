@@ -11,6 +11,8 @@ import com.root7325.voicy.utils.Config;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.vosk.LibVosk;
+import org.vosk.LogLevel;
 
 /**
  * @author root7325 on 13.06.2025
@@ -20,6 +22,8 @@ import lombok.extern.slf4j.Slf4j;
 public class Main {
     public static void main(String[] args) {
         log.info("VoicyBot is starting.");
+
+        LibVosk.setLogLevel(LogLevel.WARNINGS);
 
         Config config = Config.getInstance();
         String token = config.getTgConfig().getToken();
