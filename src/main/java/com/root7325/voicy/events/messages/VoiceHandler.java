@@ -1,19 +1,14 @@
 package com.root7325.voicy.events.messages;
 
 import com.pengrad.telegrambot.model.Update;
-import com.pengrad.telegrambot.model.Voice;
+import com.pengrad.telegrambot.model.request.ParseMode;
 import com.root7325.voicy.events.BaseEventListener;
 import com.root7325.voicy.helpers.MessageHelper;
-import com.root7325.voicy.services.AIService;
+import com.root7325.voicy.services.LLMService;
 import com.root7325.voicy.services.VoiceService;
 import com.root7325.voicy.services.VoskService;
-import com.root7325.voicy.utils.AudioConverter;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.concurrent.*;
 
 /**
@@ -23,25 +18,35 @@ import java.util.concurrent.*;
 public class VoiceHandler extends BaseEventListener {
     private final ExecutorService executorService = Executors.newFixedThreadPool(4);
     private final VoiceService voiceService = new VoiceService(translationService, executorService);
-    private final AIService aiService = new AIService();
+    private final LLMService llmService = new LLMService(executorService);
     private final VoskService voskService = new VoskService();
 
     @Override
     public void onUpdateReceived(Update update) {
         long chatId = update.message().chat().id();
+        int messageId = update.message().messageId();
+        String languageCode = "ru"; // todo: determine (may be null in chat)
 
         log.debug("Starting processing voice in {}", chatId);
-        CompletableFuture<byte[]> voiceCompletableFuture = voiceService.processVoiceMessage(chatId, "ru", update.message().voice());
+        CompletableFuture<byte[]> voiceCompletableFuture = voiceService.processVoiceMessage(chatId, messageId, languageCode, update.message().voice());
         voiceCompletableFuture.thenAccept(voiceData -> {
+            String message = translationService.getMessage(languageCode, "voice.recognized");
             String recognized = voskService.recognizeSpeech(voiceData);
-            MessageHelper.sendSimpleMessage(chatId, "Recognized: " + recognized);
+            MessageHelper.sendSimpleMessage(chatId, messageId, String.format(message, recognized));
 
-            CompletableFuture<String> responseFuture = aiService.generateResponse("Что ты думаешь о моих мыслях? Мысль: " + recognized);
-            responseFuture.thenAccept(response -> {
-                MessageHelper.sendSimpleMessage(chatId, response);
-            });
+            processRecognizedSpeech(chatId, messageId, "Что ты думаешь о моих мыслях? Мысль: " + recognized);
         }).exceptionally(ex -> {
-            log.error("dead ass", ex);
+            log.error("Error completing tasks.", ex);
+            return null;
+        });
+    }
+
+    private void processRecognizedSpeech(long chatId, int messageId, String recognized) {
+        CompletableFuture<String> responseFuture = llmService.generateResponse(recognized);
+        responseFuture.thenAccept(response -> {
+            MessageHelper.sendSimpleMessage(chatId, messageId, response, ParseMode.Markdown);
+        }).exceptionally(ex -> {
+            log.error("Error generating llm response.", ex);
             return null;
         });
     }

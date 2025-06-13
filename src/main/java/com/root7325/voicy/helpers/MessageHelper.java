@@ -3,6 +3,7 @@ package com.root7325.voicy.helpers;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import com.pengrad.telegrambot.model.request.ParseMode;
+import com.pengrad.telegrambot.model.request.ReplyParameters;
 import com.pengrad.telegrambot.request.GetFile;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.response.GetFileResponse;
@@ -31,19 +32,30 @@ public class MessageHelper {
         }
     }
 
-    private static SendMessage createMessage(long chatId, String text) {
+    private static SendMessage createMessage(long chatId, String text, ParseMode parseMode) {
         return new SendMessage(chatId, text)
-                .parseMode(ParseMode.HTML);
+                .parseMode(parseMode);
     }
 
     public static void sendSimpleMessage(long chatId, String text) {
-        SendMessage message = createMessage(chatId, text);
-        sendMessage(message);
+        sendSimpleMessage(chatId, text, ParseMode.HTML);
     }
 
-    public static void sendMessage(long chatId, String text, InlineKeyboardMarkup inlineKeyboardMarkup) {
-        SendMessage message = createMessage(chatId, text);
-        message.replyMarkup(inlineKeyboardMarkup);
+    public static void sendSimpleMessage(long chatId, String text, ParseMode parseMode) {
+        sendSimpleMessage(chatId, -1, text, parseMode);
+    }
+
+    public static void sendSimpleMessage(long chatId, int replyToMessageId, String text) {
+        sendSimpleMessage(chatId, replyToMessageId, text, ParseMode.HTML);
+    }
+
+    public static void sendSimpleMessage(long chatId, int replyToMessageId, String text, ParseMode parseMode) {
+        SendMessage message = new SendMessage(chatId, text)
+                .parseMode(parseMode);
+
+        if (replyToMessageId != -1) {
+            message.replyParameters(new ReplyParameters(replyToMessageId));
+        }
 
         sendMessage(message);
     }

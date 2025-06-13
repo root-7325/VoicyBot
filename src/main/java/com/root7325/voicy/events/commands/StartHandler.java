@@ -16,10 +16,11 @@ import lombok.extern.slf4j.Slf4j;
 public class StartHandler extends BaseEventListener {
     @Override
     public void onUpdateReceived(Update update) {
-        long id = update.message().chat().id();
-        String message = translationService.getMessage("ru", "welcome.info");
+        long chatId = update.message().chat().id();
+        int messageId = update.message().messageId();
+        String message = translationService.getMessage("ru", "start.message");
 
-        MessageHelper.sendSimpleMessage(id, message);
+        MessageHelper.sendSimpleMessage(chatId, messageId, message);
     }
 
     @Override

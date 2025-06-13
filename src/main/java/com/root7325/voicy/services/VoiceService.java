@@ -20,24 +20,24 @@ public class VoiceService {
     private final TranslationService translationService;
     private final ExecutorService executorService;
 
-    public CompletableFuture<byte[]> processVoiceMessage(long chatId, String languageCode, Voice voice) {
+    public CompletableFuture<byte[]> processVoiceMessage(long chatId, int messageId, String languageCode, Voice voice) {
         if (voice.duration() < VOICE_MINIMAL_LENGTH) {
-            String message = translationService.getMessage(languageCode, "voice.tooShort");
-            MessageHelper.sendSimpleMessage(chatId, message);
+            String message = translationService.getMessage(languageCode, "error.short_voice");
+            MessageHelper.sendSimpleMessage(chatId, messageId, message);
             return CompletableFuture.completedFuture(null);
         }
 
         return CompletableFuture.supplyAsync(
-                () -> downloadVoiceAndConvert(chatId, languageCode, voice.fileId()),
+                () -> downloadVoiceAndConvert(chatId, messageId, languageCode, voice.fileId()),
                 executorService
         );
     }
 
-    private byte[] downloadVoiceAndConvert(long chatId, String languageCode, String fileId) {
+    private byte[] downloadVoiceAndConvert(long chatId, int messageId, String languageCode, String fileId) {
         byte[] oggData = MessageHelper.downloadFile(fileId);
         if (oggData == null || oggData.length == 0) {
-            String message = translationService.getMessage(languageCode, "voice.internalError");
-            MessageHelper.sendSimpleMessage(chatId, message);
+            String message = translationService.getMessage(languageCode,"error.server_error") + "empty voice file";
+            MessageHelper.sendSimpleMessage(chatId, messageId, message);
             return null;
         }
 
@@ -45,8 +45,8 @@ public class VoiceService {
             return AudioConverter.convertOggToWav(  oggData);
         } catch (Exception ex) {
             log.error("Failed to convert ogg to wav!", ex);
-            String message = translationService.getMessage(languageCode, "voice.internalError");
-            MessageHelper.sendSimpleMessage(chatId, message);
+            String message = translationService.getMessage(languageCode, "error.server_error") + ex.getMessage();
+            MessageHelper.sendSimpleMessage(chatId, messageId, message);
             return null;
         }
     }

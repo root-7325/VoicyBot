@@ -7,20 +7,20 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
 
 /**
  * @author root7325 on 13.06.2025
- * todo: rename
  */
 @Slf4j
-public class AIService {
+public class LLMService {
     private static final String API_URL = "https://openrouter.ai/api/v1/chat/completions";
     private static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
     private static final String AI_PROMPT = """
 
-                        это голосовое сообщение. твоя задача:
-                        1. сделать его краткое саммари
-                        2. по возможности продолжить и развить высказанную идею
+                        твоя задача:
+                        1. сделать краткое саммари
+                        2. по возможности продолжать и развивать идею (будь то просто вопрос - будь то бизнес идеи)
                         не задавай вопросов - лишь четко отвечай на них в таком формате
                         первый абзац - саммари
                         дальше пустая строка
@@ -28,10 +28,12 @@ public class AIService {
                         на мою личность ты не переходишь - всё от третьего лица
             """;
 
+    private final ExecutorService executorService;
     private final OkHttpClient httpClient;
     private final String apiKey;
 
-    public AIService() {
+    public LLMService(ExecutorService executorService) {
+        this.executorService = executorService;
         this.httpClient = new OkHttpClient();
 
         Config.MiscConfig miscConfig = Config.getInstance().getMiscConfig();
@@ -39,6 +41,7 @@ public class AIService {
     }
 
     public CompletableFuture<String> generateResponse(String prompt) {
+        log.debug("Starting processing LLM request");
         return CompletableFuture.supplyAsync(() -> {
             try {
                 JSONObject requestBody = new JSONObject();
@@ -74,6 +77,6 @@ public class AIService {
                 log.error("Error in OpenRouter API call", e);
                 throw new RuntimeException("Failed to generate response", e);
             }
-        });
+        }, executorService);
     }
 }
