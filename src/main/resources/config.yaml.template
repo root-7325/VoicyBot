@@ -1,0 +1,6 @@
+tgConfig:
+  token: "BOT_TOKEN"
+
+miscConfig:
+  openRouterKey: ""
+  voskModelPath: ""
