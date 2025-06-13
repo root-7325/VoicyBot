@@ -4,6 +4,7 @@ import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.Voice;
 import com.root7325.voicy.events.BaseEventListener;
 import com.root7325.voicy.helpers.MessageHelper;
+import com.root7325.voicy.services.AIService;
 import com.root7325.voicy.services.VoiceService;
 import com.root7325.voicy.services.VoskService;
 import com.root7325.voicy.utils.AudioConverter;
@@ -22,6 +23,7 @@ import java.util.concurrent.*;
 public class VoiceHandler extends BaseEventListener {
     private final ExecutorService executorService = Executors.newFixedThreadPool(4);
     private final VoiceService voiceService = new VoiceService(translationService, executorService);
+    private final AIService aiService = new AIService();
     private final VoskService voskService = new VoskService();
 
     @Override
@@ -32,7 +34,12 @@ public class VoiceHandler extends BaseEventListener {
         CompletableFuture<byte[]> voiceCompletableFuture = voiceService.processVoiceMessage(chatId, "ru", update.message().voice());
         voiceCompletableFuture.thenAccept(voiceData -> {
             String recognized = voskService.recognizeSpeech(voiceData);
-            MessageHelper.sendSimpleMessage(chatId, recognized);
+            MessageHelper.sendSimpleMessage(chatId, "Recognized: " + recognized);
+
+            CompletableFuture<String> responseFuture = aiService.generateResponse("Что ты думаешь о моих мыслях? Мысль: " + recognized);
+            responseFuture.thenAccept(response -> {
+                MessageHelper.sendSimpleMessage(chatId, response);
+            });
         }).exceptionally(ex -> {
             log.error("dead ass", ex);
             return null;
