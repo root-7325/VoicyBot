@@ -6,6 +6,7 @@ import okhttp3.*;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 
@@ -41,7 +42,9 @@ public class LLMService {
     }
 
     public CompletableFuture<String> generateResponse(String prompt) {
-        log.debug("Starting processing LLM request");
+        String uuid = UUID.randomUUID().toString();
+
+        log.debug("Starting processing LLM request. UUID-{}", uuid);
         return CompletableFuture.supplyAsync(() -> {
             try {
                 JSONObject requestBody = new JSONObject();
@@ -62,6 +65,8 @@ public class LLMService {
                         .build();
 
                 try (Response response = httpClient.newCall(request).execute()) {
+                    log.debug("Opened request. UUID-{}", uuid);
+
                     if (!response.isSuccessful()) {
                         log.error("OpenRouter API request failed: {}", response.body().string());
                         throw new IOException("Unexpected code " + response);
@@ -75,7 +80,7 @@ public class LLMService {
                 }
             } catch (Exception e) {
                 log.error("Error in OpenRouter API call", e);
-                throw new RuntimeException("Failed to generate response", e);
+                throw new RuntimeException(e);
             }
         }, executorService);
     }

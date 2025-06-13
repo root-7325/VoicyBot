@@ -34,19 +34,22 @@ public class VoiceHandler extends BaseEventListener {
             String recognized = voskService.recognizeSpeech(voiceData);
             MessageHelper.sendSimpleMessage(chatId, messageId, String.format(message, recognized));
 
-            processRecognizedSpeech(chatId, messageId, "Что ты думаешь о моих мыслях? Мысль: " + recognized);
+            processRecognizedSpeech(chatId, messageId, languageCode, "Что ты думаешь о моих мыслях? Мысль: " + recognized);
         }).exceptionally(ex -> {
             log.error("Error completing tasks.", ex);
             return null;
         });
     }
 
-    private void processRecognizedSpeech(long chatId, int messageId, String recognized) {
+    private void processRecognizedSpeech(long chatId, int messageId, String languageCode, String recognized) {
         CompletableFuture<String> responseFuture = llmService.generateResponse(recognized);
         responseFuture.thenAccept(response -> {
             MessageHelper.sendSimpleMessage(chatId, messageId, response, ParseMode.Markdown);
         }).exceptionally(ex -> {
             log.error("Error generating llm response.", ex);
+
+            String message = translationService.getMessage(languageCode, "error.server_error") + ex.getMessage();
+            MessageHelper.sendSimpleMessage(chatId, messageId, message);
             return null;
         });
     }

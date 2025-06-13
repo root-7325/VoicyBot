@@ -71,13 +71,13 @@ public class MessageHelper {
             }
 
             String fileUrl = telegramBot.getFullFilePath(getFileResponse.file());
-            log.info("Downloading file from: {}", fileUrl);
+            log.info("Downloading file: {}", fileId);
 
             try (java.io.InputStream in = new java.net.URL(fileUrl).openStream()) {
                 return in.readAllBytes();
             }
         } catch (Exception e) {
-            log.error("Failed to download file!", e);
+            log.error("Failed to download file ({})!", fileId, e);
             return null;
         }
     }
