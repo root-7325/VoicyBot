@@ -40,15 +40,11 @@ public class VoskService {
             int nbytes;
             byte[] buffer = new byte[4096];
             while ((nbytes = ais.read(buffer)) >= 0) {
-                if (recognizer.acceptWaveForm(buffer, nbytes)) {
-                    String result = recognizer.getResult();
-                    return (String) new JSONObject(result).get("text");
-                }
+                recognizer.acceptWaveForm(buffer, nbytes);
             }
 
             String result = recognizer.getFinalResult();
             return (String) new JSONObject(result).get("text");
-
         } catch (Exception e) {
             log.error("Error recognizing speech", e);
             throw new RuntimeException("Speech recognition failed", e);

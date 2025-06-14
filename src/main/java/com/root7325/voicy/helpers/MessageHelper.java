@@ -4,6 +4,7 @@ import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.model.request.ReplyParameters;
+import com.pengrad.telegrambot.request.DeleteMessage;
 import com.pengrad.telegrambot.request.GetFile;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.response.GetFileResponse;
@@ -58,6 +59,11 @@ public class MessageHelper {
         }
 
         sendMessage(message);
+    }
+
+    public static void deleteMessage(long chatId, int messageId) {
+        DeleteMessage deleteMessage = new DeleteMessage(chatId, messageId);
+        telegramBot.execute(deleteMessage);
     }
 
     public static byte[] downloadFile(String fileId) {

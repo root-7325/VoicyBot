@@ -29,6 +29,7 @@ public class AskHandler extends BaseEventListener {
     public boolean filter(Update update) {
         return super.filter(update)
                 && update.message() != null
+                && update.message().text() != null
                 && update.message().text().contains("/ask");
     }
 }

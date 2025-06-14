@@ -45,7 +45,8 @@ public class VoiceHandler extends BaseEventListener {
     public static void processRecognizedSpeech(TranslationService translationService, LLMService llmService, long chatId, int messageId, String languageCode, String recognized) {
         CompletableFuture<String> responseFuture = llmService.generateResponse(recognized);
         responseFuture.thenAccept(response -> {
-            MessageHelper.sendSimpleMessage(chatId, messageId, response, ParseMode.Markdown);
+            String message = translationService.getMessage(languageCode, "ai.response");
+            MessageHelper.sendSimpleMessage(chatId, messageId, String.format(message, response), ParseMode.Markdown);
         }).exceptionally(ex -> {
             log.error("Error generating llm response.", ex);
 
