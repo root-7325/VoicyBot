@@ -1,7 +1,10 @@
 package com.root7325.voicy.events;
 
 import com.pengrad.telegrambot.model.Update;
+import com.root7325.voicy.services.LLMService;
 import com.root7325.voicy.services.TranslationService;
+import com.root7325.voicy.services.VoiceService;
+import com.root7325.voicy.services.VoskService;
 import lombok.Setter;
 
 /**
@@ -13,6 +16,9 @@ import lombok.Setter;
 @Setter
 public abstract class BaseEventListener implements IEventListener {
     protected TranslationService translationService;
+    protected VoiceService voiceService;
+    protected LLMService llmService;
+    protected VoskService voskService;
 
     /** Basic filter which checks if update is not null */
     @Override

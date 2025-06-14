@@ -35,4 +35,7 @@ build/
 ### Mac OS ###
 .DS_Store
 
+application.log
+dependency-reduced-pom.xml
+vosk-model-small-ru-0.22/
 src/main/resources/config.yaml
