@@ -15,7 +15,7 @@ import java.util.concurrent.ExecutorService;
 @Slf4j
 @AllArgsConstructor
 public class VoiceService {
-    private static final int VOICE_MINIMAL_LENGTH = 1;
+    private static final int VOICE_MINIMAL_LENGTH = 3;
 
     private final TranslationService translationService;
     private final ExecutorService executorService;
