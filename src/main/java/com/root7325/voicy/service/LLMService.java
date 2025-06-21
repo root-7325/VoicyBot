@@ -1,4 +1,4 @@
-package com.root7325.voicy.services;
+package com.root7325.voicy.service;
 
 import com.google.inject.Inject;
 import com.root7325.voicy.config.Config;

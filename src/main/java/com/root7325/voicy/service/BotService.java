@@ -1,19 +1,18 @@
-package com.root7325.voicy.services;
+package com.root7325.voicy.service;
 
 import com.google.inject.Inject;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.Update;
-import com.root7325.voicy.events.BaseEventListener;
-import com.root7325.voicy.events.EventListenerFactory;
-import com.root7325.voicy.events.IEventListener;
+import com.root7325.voicy.event.BaseEventListener;
+import com.root7325.voicy.event.EventListenerFactory;
+import com.root7325.voicy.event.IEventListener;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * @author root7325 on 02.03.2025

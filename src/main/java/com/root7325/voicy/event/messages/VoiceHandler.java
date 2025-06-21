@@ -1,14 +1,14 @@
-package com.root7325.voicy.events.messages;
+package com.root7325.voicy.event.messages;
 
 import com.google.inject.Inject;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.ParseMode;
-import com.root7325.voicy.events.BaseEventListener;
-import com.root7325.voicy.helpers.MessageHelper;
-import com.root7325.voicy.services.LLMService;
-import com.root7325.voicy.services.TranslationService;
-import com.root7325.voicy.services.VoiceService;
-import com.root7325.voicy.services.VoskService;
+import com.root7325.voicy.event.BaseEventListener;
+import com.root7325.voicy.helper.MessageHelper;
+import com.root7325.voicy.service.LLMService;
+import com.root7325.voicy.service.TranslationService;
+import com.root7325.voicy.service.VoiceService;
+import com.root7325.voicy.service.VoskService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

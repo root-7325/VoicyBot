@@ -1,11 +1,7 @@
-package com.root7325.voicy.events;
+package com.root7325.voicy.event;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
-import com.root7325.voicy.services.LLMService;
-import com.root7325.voicy.services.TranslationService;
-import com.root7325.voicy.services.VoiceService;
-import com.root7325.voicy.services.VoskService;
 import lombok.AllArgsConstructor;
 
 /**

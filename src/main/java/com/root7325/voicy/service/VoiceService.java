@@ -1,9 +1,9 @@
-package com.root7325.voicy.services;
+package com.root7325.voicy.service;
 
 import com.google.inject.Inject;
 import com.pengrad.telegrambot.model.Voice;
-import com.root7325.voicy.helpers.MessageHelper;
-import com.root7325.voicy.utils.AudioConverter;
+import com.root7325.voicy.helper.MessageHelper;
+import com.root7325.voicy.util.AudioConverter;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

@@ -1,4 +1,4 @@
-package com.root7325.voicy.services;
+package com.root7325.voicy.service;
 
 import lombok.extern.slf4j.Slf4j;
 

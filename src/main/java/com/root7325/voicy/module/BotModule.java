@@ -6,10 +6,10 @@ import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.pengrad.telegrambot.TelegramBot;
 import com.root7325.voicy.config.Config;
-import com.root7325.voicy.services.LLMService;
-import com.root7325.voicy.services.TranslationService;
-import com.root7325.voicy.services.VoiceService;
-import com.root7325.voicy.services.VoskService;
+import com.root7325.voicy.service.LLMService;
+import com.root7325.voicy.service.TranslationService;
+import com.root7325.voicy.service.VoiceService;
+import com.root7325.voicy.service.VoskService;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

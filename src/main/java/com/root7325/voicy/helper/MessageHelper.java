@@ -1,7 +1,6 @@
-package com.root7325.voicy.helpers;
+package com.root7325.voicy.helper;
 
 import com.pengrad.telegrambot.TelegramBot;
-import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.model.request.ReplyParameters;
 import com.pengrad.telegrambot.request.DeleteMessage;

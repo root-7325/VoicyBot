@@ -1,14 +1,10 @@
-package com.root7325.voicy.services;
+package com.root7325.voicy.service;
 
-import com.google.gson.JsonObject;
 import com.google.inject.Inject;
 import com.root7325.voicy.config.Config;
 import com.root7325.voicy.config.MiscConfig;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
-import org.vosk.LibVosk;
-import org.vosk.LogLevel;
 import org.vosk.Model;
 import org.vosk.Recognizer;
 
