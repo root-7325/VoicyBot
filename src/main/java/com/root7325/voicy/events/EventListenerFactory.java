@@ -1,5 +1,7 @@
 package com.root7325.voicy.events;
 
+import com.google.inject.Inject;
+import com.google.inject.Injector;
 import com.root7325.voicy.services.LLMService;
 import com.root7325.voicy.services.TranslationService;
 import com.root7325.voicy.services.VoiceService;
@@ -11,26 +13,11 @@ import lombok.AllArgsConstructor;
  * <p>
  * Factory class for creating {@link BaseEventListener} instances.
  */
-@AllArgsConstructor
+@AllArgsConstructor(onConstructor = @__({@Inject}))
 public class EventListenerFactory {
-    private final TranslationService translationService;
-    private final VoiceService voiceService;
-    private final LLMService llmService;
-    private final VoskService voskService;
-    // todo: ^ is bad
+    private final Injector injector;
 
-    public <T extends BaseEventListener> T createEventListener(Class<T> listenerClass) {
-        try {
-            T listener = listenerClass.getDeclaredConstructor().newInstance();
-
-            listener.setTranslationService(translationService);
-            listener.setVoiceService(voiceService);
-            listener.setLlmService(llmService);
-            listener.setVoskService(voskService);
-
-            return listener;
-        } catch (Exception ex) {
-            throw new UnsupportedOperationException("Failed to create instance of event listener.", ex);
-        }
+    public <T extends IEventListener> T createEventListener(Class<T> listenerClass) {
+        return injector.getInstance(listenerClass);
     }
 }

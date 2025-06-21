@@ -1,5 +1,6 @@
 package com.root7325.voicy.events.messages;
 
+import com.google.inject.Inject;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.ParseMode;
 import com.root7325.voicy.events.BaseEventListener;
@@ -8,6 +9,7 @@ import com.root7325.voicy.services.LLMService;
 import com.root7325.voicy.services.TranslationService;
 import com.root7325.voicy.services.VoiceService;
 import com.root7325.voicy.services.VoskService;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.*;
@@ -16,11 +18,12 @@ import java.util.concurrent.*;
  * @author root7325 on 13.06.2025
  */
 @Slf4j
+@AllArgsConstructor(onConstructor = @__({@Inject}))
 public class VoiceHandler extends BaseEventListener {
-    private final ExecutorService executorService = Executors.newFixedThreadPool(4);
-    private final VoiceService voiceService = new VoiceService(translationService, executorService);
-    private final LLMService llmService = new LLMService(executorService);
-    private final VoskService voskService = new VoskService();
+    private final TranslationService translationService;
+    private final LLMService llmService;
+    private final VoiceService voiceService;
+    private final VoskService voskService;
 
     @Override
     public void onUpdateReceived(Update update) {

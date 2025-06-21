@@ -1,5 +1,6 @@
 package com.root7325.voicy.services;
 
+import com.google.inject.Inject;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.Update;
@@ -24,22 +25,19 @@ import java.util.concurrent.Executors;
 @Getter
 public class BotService {
     private final TelegramBot telegramBot;
-    private final TranslationService translationService;
     private final EventListenerFactory eventListenerFactory;
+    private final ExecutorService executorService;
 
     /** List of registered event listeners */
     private final List<BaseEventListener> eventListeners;
 
-    /** Thread pool for handling updates */
-    private final ExecutorService executorService = Executors.newFixedThreadPool(4);
-
-    public BotService(TelegramBot telegramBot, TranslationService translationService,
-                      EventListenerFactory eventListenerFactory) {
+    @Inject
+    public BotService(TelegramBot telegramBot, EventListenerFactory eventListenerFactory,
+                      ExecutorService executorService) {
         this.telegramBot = telegramBot;
-
-        this.translationService = translationService;
-
         this.eventListenerFactory = eventListenerFactory;
+        this.executorService = executorService;
+
         this.eventListeners = new CopyOnWriteArrayList<>();
     }
 

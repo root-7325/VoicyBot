@@ -1,6 +1,8 @@
 package com.root7325.voicy.services;
 
-import com.root7325.voicy.utils.Config;
+import com.google.inject.Inject;
+import com.root7325.voicy.config.Config;
+import com.root7325.voicy.config.MiscConfig;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import org.json.JSONObject;
@@ -33,11 +35,12 @@ public class LLMService {
     private final OkHttpClient httpClient;
     private final String apiKey;
 
-    public LLMService(ExecutorService executorService) {
+    @Inject
+    public LLMService(Config config, ExecutorService executorService) {
         this.executorService = executorService;
         this.httpClient = new OkHttpClient();
 
-        Config.MiscConfig miscConfig = Config.getInstance().getMiscConfig();
+        MiscConfig miscConfig = config.getMiscConfig();
         this.apiKey = miscConfig.getOpenRouterKey();
     }
 
