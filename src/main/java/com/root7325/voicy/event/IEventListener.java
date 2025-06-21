@@ -1,4 +1,4 @@
-package com.root7325.voicy.events;
+package com.root7325.voicy.event;
 
 import com.pengrad.telegrambot.model.Update;
 

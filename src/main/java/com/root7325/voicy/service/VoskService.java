@@ -1,12 +1,10 @@
-package com.root7325.voicy.services;
+package com.root7325.voicy.service;
 
-import com.google.gson.JsonObject;
-import com.root7325.voicy.utils.Config;
-import lombok.AllArgsConstructor;
+import com.google.inject.Inject;
+import com.root7325.voicy.config.Config;
+import com.root7325.voicy.config.MiscConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
-import org.vosk.LibVosk;
-import org.vosk.LogLevel;
 import org.vosk.Model;
 import org.vosk.Recognizer;
 
@@ -21,8 +19,9 @@ import java.io.ByteArrayInputStream;
 public class VoskService {
     private final Model model;
 
-    public VoskService() {
-        Config.MiscConfig miscConfig = Config.getInstance().getMiscConfig();
+    @Inject
+    public VoskService(Config config) {
+        MiscConfig miscConfig = config.getMiscConfig();
         String modelPath = miscConfig.getVoskModelPath();
 
         try {

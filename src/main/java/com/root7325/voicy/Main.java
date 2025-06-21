@@ -1,22 +1,19 @@
 package com.root7325.voicy;
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import com.pengrad.telegrambot.TelegramBot;
-import com.root7325.voicy.events.EventListenerFactory;
-import com.root7325.voicy.events.commands.AskHandler;
-import com.root7325.voicy.events.commands.StartHandler;
-import com.root7325.voicy.events.messages.VoiceHandler;
-import com.root7325.voicy.helpers.MessageHelper;
-import com.root7325.voicy.services.*;
-import com.root7325.voicy.utils.Config;
+import com.root7325.voicy.event.commands.AskHandler;
+import com.root7325.voicy.event.commands.StartHandler;
+import com.root7325.voicy.event.messages.VoiceHandler;
+import com.root7325.voicy.helper.MessageHelper;
+import com.root7325.voicy.module.AppModule;
+import com.root7325.voicy.service.*;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.vosk.LibVosk;
 import org.vosk.LogLevel;
-
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * @author root7325 on 13.06.2025
@@ -29,29 +26,14 @@ public class Main {
 
         LibVosk.setLogLevel(LogLevel.WARNINGS);
 
-        Config config = Config.getInstance();
-        String token = config.getTgConfig().getToken();
+        Injector injector = Guice.createInjector(new AppModule());
 
-        ExecutorService executorService = Executors.newFixedThreadPool(4);
-
-        TelegramBot telegramBot = new TelegramBot(token);
-        BotService botService = getBotService(executorService, telegramBot);
+        BotService botService = injector.getInstance(BotService.class);
         botService.registerListener(StartHandler.class);
         botService.registerListener(AskHandler.class);
         botService.registerListener(VoiceHandler.class);
-        MessageHelper.init(telegramBot);
 
+        MessageHelper.init(injector.getInstance(TelegramBot.class));
         botService.startListening();
-    }
-
-    @NotNull
-    private static BotService getBotService(ExecutorService executorService, TelegramBot telegramBot) {
-        TranslationService translationService = new TranslationService();
-        VoiceService voiceService = new VoiceService(translationService, executorService);
-        LLMService llmService = new LLMService(executorService);
-        VoskService voskService = new VoskService();
-        EventListenerFactory eventListenerFactory = new EventListenerFactory(translationService, voiceService, llmService, voskService);
-
-        return new BotService(telegramBot, translationService, eventListenerFactory);
     }
 }

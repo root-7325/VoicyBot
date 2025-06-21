@@ -1,8 +1,9 @@
-package com.root7325.voicy.services;
+package com.root7325.voicy.service;
 
+import com.google.inject.Inject;
 import com.pengrad.telegrambot.model.Voice;
-import com.root7325.voicy.helpers.MessageHelper;
-import com.root7325.voicy.utils.AudioConverter;
+import com.root7325.voicy.helper.MessageHelper;
+import com.root7325.voicy.util.AudioConverter;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -13,7 +14,7 @@ import java.util.concurrent.ExecutorService;
  * @author root7325 on 13.06.2025
  */
 @Slf4j
-@AllArgsConstructor
+@AllArgsConstructor(onConstructor = @__({@Inject}))
 public class VoiceService {
     private static final int VOICE_MINIMAL_LENGTH = 3;
 

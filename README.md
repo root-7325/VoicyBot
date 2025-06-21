@@ -16,6 +16,7 @@ VoicyBot is a Telegram bot that processes voice messages, provides summaries and
 - Maven 3.8+
 - Telegram Bot token from [@BotFather](https://t.me/BotFather)
 - Vosk model (can be obtained from [here](https://github.com/alphacep/vosk-space/blob/master/models.md))
+- FFmpeg
 - API key on [OpenRouter](https://openrouter.ai)
 
 ## Installation and running
