@@ -1,5 +1,7 @@
 package com.root7325.voicy.helper;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.model.request.ReplyParameters;
@@ -8,6 +10,7 @@ import com.pengrad.telegrambot.request.GetFile;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.response.GetFileResponse;
 import com.pengrad.telegrambot.response.SendResponse;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -16,40 +19,28 @@ import lombok.extern.slf4j.Slf4j;
  * Helper for messages responsing.
  */
 @Slf4j
-public class MessageHelper {
-    private static TelegramBot telegramBot;
+@Singleton
+@AllArgsConstructor(onConstructor = @__({@Inject}))
+public class MessageHelperImpl implements IMessageHelper {
+    private final TelegramBot telegramBot;
 
-    public static void init(TelegramBot bot) {
-        telegramBot = bot;
+    public SendResponse sendMessage(SendMessage message) {
+        return telegramBot.execute(message);
     }
 
-    public static SendResponse sendMessage(SendMessage message) {
-        try {
-            return telegramBot.execute(message);
-        } catch (Exception e) {
-            log.error("Failed to send message!", e);
-            return null;
-        }
+    public SendResponse sendSimpleMessage(long chatId, String text) {
+        return sendSimpleMessage(chatId, text, ParseMode.HTML);
     }
 
-    private static SendMessage createMessage(long chatId, String text, ParseMode parseMode) {
-        return new SendMessage(chatId, text)
-                .parseMode(parseMode);
+    public SendResponse sendSimpleMessage(long chatId, String text, ParseMode parseMode) {
+        return sendSimpleMessage(chatId, -1, text, parseMode);
     }
 
-    public static void sendSimpleMessage(long chatId, String text) {
-        sendSimpleMessage(chatId, text, ParseMode.HTML);
+    public SendResponse sendSimpleMessage(long chatId, int replyToMessageId, String text) {
+        return sendSimpleMessage(chatId, replyToMessageId, text, ParseMode.HTML);
     }
 
-    public static void sendSimpleMessage(long chatId, String text, ParseMode parseMode) {
-        sendSimpleMessage(chatId, -1, text, parseMode);
-    }
-
-    public static void sendSimpleMessage(long chatId, int replyToMessageId, String text) {
-        sendSimpleMessage(chatId, replyToMessageId, text, ParseMode.HTML);
-    }
-
-    public static void sendSimpleMessage(long chatId, int replyToMessageId, String text, ParseMode parseMode) {
+    public SendResponse sendSimpleMessage(long chatId, int replyToMessageId, String text, ParseMode parseMode) {
         SendMessage message = new SendMessage(chatId, text)
                 .parseMode(parseMode);
 
@@ -57,15 +48,15 @@ public class MessageHelper {
             message.replyParameters(new ReplyParameters(replyToMessageId));
         }
 
-        sendMessage(message);
+        return sendMessage(message);
     }
 
-    public static void deleteMessage(long chatId, int messageId) {
+    public void deleteMessage(long chatId, int messageId) {
         DeleteMessage deleteMessage = new DeleteMessage(chatId, messageId);
         telegramBot.execute(deleteMessage);
     }
 
-    public static byte[] downloadFile(String fileId) {
+    public byte[] downloadFile(String fileId) {
         try {
             GetFile getFileRequest = new GetFile(fileId);
             GetFileResponse getFileResponse = telegramBot.execute(getFileRequest);

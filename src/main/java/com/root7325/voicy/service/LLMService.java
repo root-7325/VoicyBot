@@ -3,6 +3,7 @@ package com.root7325.voicy.service;
 import com.google.inject.Inject;
 import com.root7325.voicy.config.Config;
 import com.root7325.voicy.config.MiscConfig;
+import com.root7325.voicy.config.TgConfig;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import org.json.JSONObject;
@@ -21,19 +22,23 @@ public class LLMService {
     private static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
     private static final String AI_PROMPT = """
 
-                        твоя задача:
-                        1. сделать краткое саммари мысли
-                        2. по возможности продолжать и развивать идею (будь то просто вопрос - будь то бизнес идеи)
-                        не задавай вопросов - лишь четко отвечай на них в таком формате
-                        первый абзац - саммари
-                        дальше пустая строка
-                        дальше предлагай развитие идеи
-                        на мою личность ты не переходишь - всё от третьего лица
-            """;
+        Проанализируй предоставленный текст:
+        1. Сначала кратко изложи основную мысль (саммари).
+        2. Затем предложи возможные направления для развития или улучшения идеи.
+        Не задавай вопросов, отвечай лаконично и по существу. Используй третье лицо.
+        Используй Markdown для форматирования ответа (*bold text* _italic text_).
+        Формат:
+        - Первый абзац: саммари
+        - Пустая строка
+        - Второй абзац: развитие или предложения
+        
+        Ответ давай на следующем языке: 
+    """;
 
     private final ExecutorService executorService;
     private final OkHttpClient httpClient;
     private final String apiKey;
+    private final String language;
 
     @Inject
     public LLMService(Config config, ExecutorService executorService) {
@@ -42,6 +47,9 @@ public class LLMService {
 
         MiscConfig miscConfig = config.getMiscConfig();
         this.apiKey = miscConfig.getOpenRouterKey();
+
+        TgConfig tgConfig = config.getTgConfig();
+        this.language = tgConfig.getLanguage();
     }
 
     public CompletableFuture<String> generateResponse(String prompt) {
@@ -55,7 +63,7 @@ public class LLMService {
 
                 JSONObject message = new JSONObject();
                 message.put("role", "user");
-                message.put("content", prompt + AI_PROMPT);
+                message.put("content", prompt + AI_PROMPT + language);
 
                 requestBody.put("messages", new JSONObject[]{message});
 
