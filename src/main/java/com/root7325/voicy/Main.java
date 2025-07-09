@@ -2,11 +2,9 @@ package com.root7325.voicy;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.pengrad.telegrambot.TelegramBot;
 import com.root7325.voicy.event.commands.AskHandler;
 import com.root7325.voicy.event.commands.StartHandler;
 import com.root7325.voicy.event.messages.VoiceHandler;
-import com.root7325.voicy.helper.MessageHelper;
 import com.root7325.voicy.module.AppModule;
 import com.root7325.voicy.service.*;
 import lombok.AccessLevel;
@@ -33,7 +31,6 @@ public class Main {
         botService.registerListener(AskHandler.class);
         botService.registerListener(VoiceHandler.class);
 
-        MessageHelper.init(injector.getInstance(TelegramBot.class));
         botService.startListening();
     }
 }

@@ -13,4 +13,5 @@ import lombok.Setter;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class TgConfig {
     private String token;
+    private String language;
 }

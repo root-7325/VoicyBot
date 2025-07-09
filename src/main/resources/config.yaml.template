@@ -1,5 +1,6 @@
 tgConfig:
   token: "BOT_TOKEN"
+  language: "en" # ietf language tag
 
 miscConfig:
   openRouterKey: ""

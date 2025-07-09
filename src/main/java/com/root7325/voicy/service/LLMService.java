@@ -3,6 +3,7 @@ package com.root7325.voicy.service;
 import com.google.inject.Inject;
 import com.root7325.voicy.config.Config;
 import com.root7325.voicy.config.MiscConfig;
+import com.root7325.voicy.config.TgConfig;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import org.json.JSONObject;
@@ -25,15 +26,19 @@ public class LLMService {
         1. Сначала кратко изложи основную мысль (саммари).
         2. Затем предложи возможные направления для развития или улучшения идеи.
         Не задавай вопросов, отвечай лаконично и по существу. Используй третье лицо.
+        Используй Markdown для форматирования ответа (*bold text* _italic text_).
         Формат:
         - Первый абзац: саммари
         - Пустая строка
         - Второй абзац: развитие или предложения
+        
+        Ответ давай на следующем языке: 
     """;
 
     private final ExecutorService executorService;
     private final OkHttpClient httpClient;
     private final String apiKey;
+    private final String language;
 
     @Inject
     public LLMService(Config config, ExecutorService executorService) {
@@ -42,6 +47,9 @@ public class LLMService {
 
         MiscConfig miscConfig = config.getMiscConfig();
         this.apiKey = miscConfig.getOpenRouterKey();
+
+        TgConfig tgConfig = config.getTgConfig();
+        this.language = tgConfig.getLanguage();
     }
 
     public CompletableFuture<String> generateResponse(String prompt) {
@@ -55,7 +63,7 @@ public class LLMService {
 
                 JSONObject message = new JSONObject();
                 message.put("role", "user");
-                message.put("content", prompt + AI_PROMPT);
+                message.put("content", prompt + AI_PROMPT + language);
 
                 requestBody.put("messages", new JSONObject[]{message});
 
