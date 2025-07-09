@@ -2,6 +2,7 @@ package com.root7325.voicy.event.commands;
 
 import com.google.inject.Inject;
 import com.pengrad.telegrambot.model.Update;
+import com.pengrad.telegrambot.response.SendResponse;
 import com.root7325.voicy.config.TgConfig;
 import com.root7325.voicy.event.BaseEventListener;
 import com.root7325.voicy.helper.IMessageHelper;
@@ -29,8 +30,9 @@ public class AskHandler extends BaseEventListener {
         String waitMessage = translationService.getMessage(tgConfig.getLanguage(), "ask.message");
         String prompt = update.message().text().split("/ask ")[1];
 
-        messageHelper.sendSimpleMessage(chatId, messageId, waitMessage);
-        speechProcessingService.processRecognizedSpeech(chatId, messageId, prompt);
+        SendResponse response = messageHelper.sendSimpleMessage(chatId, messageId, waitMessage);
+        speechProcessingService.processRecognizedSpeech(chatId, messageId, prompt)
+                .thenRun(() -> messageHelper.deleteMessage(chatId, response.message().messageId()));
     }
 
     @Override
@@ -38,6 +40,6 @@ public class AskHandler extends BaseEventListener {
         return super.filter(update)
                 && update.message() != null
                 && update.message().text() != null
-                && update.message().text().contains("/ask");
+                && update.message().text().split("/ask").length > 1;
     }
 }
