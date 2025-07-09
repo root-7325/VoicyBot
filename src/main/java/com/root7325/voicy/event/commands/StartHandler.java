@@ -3,7 +3,7 @@ package com.root7325.voicy.event.commands;
 import com.google.inject.Inject;
 import com.pengrad.telegrambot.model.Update;
 import com.root7325.voicy.event.BaseEventListener;
-import com.root7325.voicy.helper.MessageHelper;
+import com.root7325.voicy.helper.IMessageHelper;
 import com.root7325.voicy.service.TranslationService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @AllArgsConstructor(onConstructor = @__({@Inject}))
 public class StartHandler extends BaseEventListener {
+    private final IMessageHelper messageHelper;
     private final TranslationService translationService;
 
     @Override
@@ -22,7 +23,7 @@ public class StartHandler extends BaseEventListener {
         int messageId = update.message().messageId();
         String message = translationService.getMessage("ru", "start.message");
 
-        MessageHelper.sendSimpleMessage(chatId, messageId, message);
+        messageHelper.sendSimpleMessage(chatId, messageId, message);
     }
 
     @Override
