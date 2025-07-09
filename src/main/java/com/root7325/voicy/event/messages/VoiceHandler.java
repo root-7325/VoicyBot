@@ -38,7 +38,7 @@ public class VoiceHandler extends BaseEventListener {
             String recognized = voskService.recognizeSpeech(voiceData);
             MessageHelper.sendSimpleMessage(chatId, messageId, String.format(message, recognized));
 
-            processRecognizedSpeech(translationService, llmService, chatId, messageId, languageCode, "Что ты думаешь о моих мыслях? Мысль: " + recognized);
+            processRecognizedSpeech(translationService, llmService, chatId, messageId, languageCode, recognized);
         }).exceptionally(ex -> {
             log.error("Error completing tasks.", ex);
             return null;
