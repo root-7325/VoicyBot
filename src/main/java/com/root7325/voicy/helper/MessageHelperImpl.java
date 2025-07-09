@@ -24,26 +24,23 @@ import lombok.extern.slf4j.Slf4j;
 public class MessageHelperImpl implements IMessageHelper {
     private final TelegramBot telegramBot;
 
-    public void sendMessage(SendMessage message) {
-        SendResponse sendResponse = telegramBot.execute(message);
-        if (!sendResponse.isOk()) {
-            log.error("Failed to send message: {}", sendResponse.description());
-        }
+    public SendResponse sendMessage(SendMessage message) {
+        return telegramBot.execute(message);
     }
 
-    public void sendSimpleMessage(long chatId, String text) {
-        sendSimpleMessage(chatId, text, ParseMode.HTML);
+    public SendResponse sendSimpleMessage(long chatId, String text) {
+        return sendSimpleMessage(chatId, text, ParseMode.HTML);
     }
 
-    public void sendSimpleMessage(long chatId, String text, ParseMode parseMode) {
-        sendSimpleMessage(chatId, -1, text, parseMode);
+    public SendResponse sendSimpleMessage(long chatId, String text, ParseMode parseMode) {
+        return sendSimpleMessage(chatId, -1, text, parseMode);
     }
 
-    public void sendSimpleMessage(long chatId, int replyToMessageId, String text) {
-        sendSimpleMessage(chatId, replyToMessageId, text, ParseMode.HTML);
+    public SendResponse sendSimpleMessage(long chatId, int replyToMessageId, String text) {
+        return sendSimpleMessage(chatId, replyToMessageId, text, ParseMode.HTML);
     }
 
-    public void sendSimpleMessage(long chatId, int replyToMessageId, String text, ParseMode parseMode) {
+    public SendResponse sendSimpleMessage(long chatId, int replyToMessageId, String text, ParseMode parseMode) {
         SendMessage message = new SendMessage(chatId, text)
                 .parseMode(parseMode);
 
@@ -51,7 +48,7 @@ public class MessageHelperImpl implements IMessageHelper {
             message.replyParameters(new ReplyParameters(replyToMessageId));
         }
 
-        sendMessage(message);
+        return sendMessage(message);
     }
 
     public void deleteMessage(long chatId, int messageId) {
