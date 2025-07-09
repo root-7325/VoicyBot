@@ -18,9 +18,9 @@ public class SpeechProcessingService {
     private final LLMService llmService;
     private final IMessageHelper messageHelper;
 
-    public void processRecognizedSpeech(long chatId, int messageId, String recognized) {
+    public CompletableFuture<Void> processRecognizedSpeech(long chatId, int messageId, String recognized) {
         CompletableFuture<String> responseFuture = llmService.generateResponse(recognized);
-        responseFuture.thenAccept(response -> {
+        return responseFuture.thenAccept(response -> {
             String message = translationService.getMessage(tgConfig.getLanguage(), "ai.response");
             messageHelper.sendSimpleMessage(chatId, messageId, String.format(message, response), ParseMode.Markdown);
         }).exceptionally(ex -> {
